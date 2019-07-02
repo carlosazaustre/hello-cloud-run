@@ -1,0 +1,14 @@
+steps:
+  # build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/hello-cloud-run-245519/hello-cloud-run', '.']
+  # push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/hello-cloud-run-245519/hello-cloud-run']
+  # deploy container image to Cloud Run
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['beta', 'run', 'deploy', 'hello-cloud-run', '--image', 'gcr.io/hello-cloud-run-245519/hello-cloud-run', '--region', 'us-central1']
+  env:
+  - 'PORT=8080'
+images:
+- gcr.io/hello-cloud-run-245519/hello-cloud-run
