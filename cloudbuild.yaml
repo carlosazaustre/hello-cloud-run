@@ -5,6 +5,12 @@ steps:
   # push the container image to Container Registry
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/$PROJECT_ID/hello-cloud-run']
+  # make service accesible
+- name: 'grc.io/cloud-builders/gcloud'
+  args: ['beta', 'run', 'services', 'add-iam-policy-binding', 'hello-cloud-run', '--member', 'allUsers', '--role', 'roles/run.invoker']
+  # let unautorized requests
+- name: 'grc.io/cloud-builders/gcloud'
+  args: ['beta', 'run', 'services', 'update', 'hello-cloud-run', '--allow-unauthenticated']
   # deploy container image to Cloud Run
 - name: 'gcr.io/cloud-builders/gcloud'
   args: ['beta', 'run', 'deploy', 'hello-cloud-run', '--image', 'gcr.io/$PROJECT_ID/hello-cloud-run:${SHORT_SHA}', '--region', 'us-central1', '--allow-unauthenticated']
